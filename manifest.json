@@ -1,22 +1,22 @@
 {
-  "name": "Учет Боеприпасов 2С1 'Гвоздика'",
-  "short_name": "Учет БП",
+  "name": "2С1 Гвоздика",
+  "short_name": "Гвоздика",
+  "description": "Учет боеприпасов 2С1 Гвоздика",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3b4d2a",
+  "theme_color": "#556b2f",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23556b2f' rx='15'/><text x='50' y='65' font-family='Arial' font-size='35' fill='white' text-anchor='middle'>💥</text></svg>",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/svg+xml"
     },
     {
-      "src": "icon-512.png",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23556b2f' rx='15'/><text x='50' y='65' font-family='Arial' font-size='35' fill='white' text-anchor='middle'>💥</text></svg>",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2c3e50"
+  ]
 }
