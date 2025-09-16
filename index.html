@@ -665,7 +665,15 @@
         // Обновление даты отчета
         function updateReportDate() {
             const now = new Date();
-            document.getElementById('reportDate').textContent = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            now.setHours(10, 27, 0, 0); // Установка на 10:27 AM EEST, 16 сентября 2025
+            document.getElementById('reportDate').textContent = now.toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
         }
 
         // Печать отчета на отдельном листе
@@ -674,7 +682,7 @@
             if (!document.querySelector('#reportTable tbody').children.length) generateReport();
 
             // Создание нового окна для печати
-            const printWindow = window.open('', '', 'width=800,height=600');
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
             if (!printWindow) {
                 alert('Блокировка всплывающих окон предотвращает печать. Разблокируйте и попробуйте снова.');
                 return;
@@ -733,9 +741,14 @@
             printWindow.document.write(reportContent);
             printWindow.document.close();
 
-            // Вызов печати после загрузки содержимого
-            printWindow.onload = () => printWindow.print();
-            printWindow.onafterprint = () => printWindow.close(); // Закрытие окна после печати
+            // Гарантированный вызов печати
+            printWindow.onload = () => {
+                printWindow.focus(); // Убедимся, что окно активно
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.onafterprint = () => printWindow.close();
+                }, 500); // Задержка для загрузки содержимого
+            };
         }
 
         // Обновление списка типов боеприпасов
