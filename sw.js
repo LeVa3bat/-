@@ -1,28 +1,35 @@
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open('gvozdika-cache-v1').then((cache) => cache.addAll([
-      '/',
-      '/index.html',
-      '/manifest.json',
-      '/sw.js',
-      '/icon-192.png', // Убедитесь, что иконки доступны
-      '/icon-512.png'
-    ]))
+const CACHE_NAME = 'gvozdika-mobile-v1';
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/app.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keyList) => Promise.all(
-      keyList.map((key) => {
-        if (key !== 'gvozdika-cache-v1') return caches.delete(key);
-      })
-    ))
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
   );
 });
