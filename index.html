@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Учет Боеприпасов 2С1 'Гвоздика'</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary: linear-gradient(135deg, #2c3e50, #3498db);
+            --secondary: #34495e;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --text: #333;
+            --border: rgba(189, 195, 199, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(45deg, #4a7048, #6b4e31, #2f2f2f, #6b4e31);
+            background-size: 200% 200%;
+            animation: camoShift 15s ease infinite;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes camoShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            flex: 1;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9);
+            flex: 1;
+            text-align: center;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 90px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--secondary);
+            color: white;
+            position: sticky;
+            top: 0;
+            font-size: 0.9rem;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        tr:hover {
+            background-color: rgba(238, 242, 247, 0.9);
+            transition: background-color 0.2s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--accent);
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            opacity: 0.95;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .report-section {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--accent);
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .editable-cell {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.9);
+            min-width: 50px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .readonly-cell {
+            background-color: rgba(249, 251, 253, 0.9);
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: auto;
+            background: rgba(255, 255, 255, 0.7);
+            border-top: 1px solid var(--border);
+        }
+
+        @media print {
+            .tabs, .action-buttons, .install-btn, footer {
+                display: none !important;
+            }
+
+            .tab-content {
+                display: block !important;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            header {
+                box-shadow: none;
+            }
+
+            body, .container {
+                padding: 0;
+                margin: 0;
+                background: white;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.75rem;
+            }
+
+            .summary-card {
+                padding: 1rem;
+            }
+
+            header {
+                padding: 0.75rem;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .summary-card h3 {
+                font-size: 1rem;
+            }
+        }
+
+        .install-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Учет Боеприпасов 2С1 'Гвоздика'</h1>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="main">Главная</div>
+            <div class="tab" data-tab="operations">Операции</div>
+            <div class="tab" data-tab="reports">Отчеты</div>
+        </div>
+
+        <div class="tab-content active" id="main">
+            <div class="summary-card">
+                <h3>Сводка по боеприпасам</h3>
+                <table id="summaryTable">
+                    <thead>
+                        <tr>
+                            <th>Тип боеприпаса</th>
+                            <th>Начальный остаток</th>
+                            <th>Приход</th>
+                            <th>Расход</th>
+                            <th>Конечный остаток</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные будут добавляться динамически -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="operations">
+            <h2>Приход/Расход боеприпасов</h2>
+
+            <div class="form-group">
+                <label for="operationAmmoType">Тип боеприпаса:</label>
+                <select id="operationAmmoType">
+                    <option value="">-- Выберите тип --</option>
+                    <!-- Динамически заполняется в JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="operationType">Тип операции:</label>
+                <select id="operationType">
+                    <option value="in">Приход</option>
+                    <option value="out">Расход</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Количество:</label>
+                <input type="number" id="quantity" min="1" value="1">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Примечание:</label>
+                <input type="text" id="notes" placeholder="Дополнительная информация">
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" id="applyOperation">Применить операцию</button>
+            </div>
+
+            <div class="summary-card">
+                <h3>История операций</h3>
+                <table id="operationsTable">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тип боеприпаса</th>
+                            <th>Операция</th>
+                            <th>Количество</th>
+                            <th>Примечание</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные операций будут добавляться динамически -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="reports">
+            <h2>Отчеты по боеприпасам</h2>
+
+            <div class="action-buttons">
+                <button class="btn-primary" id="generateReport">Сформировать отчет</button>
+                <button class="btn-warning" id="printReport">Печать отчета</button>
+            </div>
+
+            <div class="report-section">
+                <h3>Отчет на: <span id="reportDate"></span></h3>
+                <table id="reportTable">
+                    <thead>
+                        <tr>
+                            <th>Тип боеприпаса</th>
+                            <th>Начальный остаток</th>
+                            <th>Приход</th>
+                            <th>Расход</th>
+                            <th>Конечный остаток</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные отчета будут добавляться динамически -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Разработчик Васев Алексей Евгеньевич 2025 г.</p>
+    </footer>
+
+    <button class="install-btn" id="installButton">+</button>
+
+    <script>
+        // Константы для данных
+        const AMMO_TYPES = [
+            "Зарыватель РТМ-2",
+            "Заряд полный",
+            "Заряд уменьшенный",
+            "Full charge (Иранские)",
+            "РУС (ОФ-56(1))",
+            "КИМ (ОФ)",
+            "ИРАН (ОФ)",
+            "ДБ (ОФ)",
+            "ДЫМ (Д4(М))",
+            "ТРОТИЛ",
+            "СВЕТ [С-4]",
+            "ШРАПНЕЛЬ [ЗШ1]"
+        ];
+
+        // Глобальные данные
+        let ammoData = JSON.parse(localStorage.getItem('ammoData')) || [];
+        let operationsHistory = JSON.parse(localStorage.getItem('operationsHistory')) || [];
+
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            setupEventListeners();
+            loadAmmoData();
+            updateReportDate();
+            updateMainPage();
+            renderOperationsHistory();
+        });
+
+        // Инициализация интерфейса и данных
+        function initializeApp() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.addEventListener('click', () => activateTab(tab.dataset.tab)));
+
+            if (ammoData.length === 0) {
+                ammoData = AMMO_TYPES.map(type => ({ type, initial: 0, income: 0, outcome: 0, final: 0 }));
+                saveData();
+            }
+
+            updateAmmoTypeSelect();
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            document.getElementById('applyOperation').addEventListener('click', applyOperation);
+            document.getElementById('generateReport').addEventListener('click', generateReport);
+            document.getElementById('printReport').addEventListener('click', printReport);
+
+            let deferredPrompt;
+            const installButton = document.getElementById('installButton');
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.style.display = 'block';
+            });
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') installButton.style.display = 'none';
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        // Активация вкладки
+        function activateTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Обновление главной страницы
+        function updateMainPage() {
+            const summaryBody = document.querySelector('#summaryTable tbody');
+            summaryBody.innerHTML = '';
+            ammoData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.type}</td>
+                    <td><input type="number" class="editable-cell" value="${item.initial}" data-index="${index}" data-field="initial" min="0"></td>
+                    <td><div class="readonly-cell positive">${item.income}</div></td>
+                    <td><div class="readonly-cell negative">${item.outcome}</div></td>
+                    <td><div class="readonly-cell">${item.final}</div></td>
+                `;
+                summaryBody.appendChild(row);
+            });
+
+            document.querySelectorAll('.editable-cell').forEach(input => {
+                input.addEventListener('change', () => {
+                    const index = input.dataset.index;
+                    const field = input.dataset.field;
+                    ammoData[index][field] = parseInt(input.value) || 0;
+                    calculateFinal();
+                });
+            });
+        }
+
+        // Пересчет итогов
+        function calculateFinal() {
+            ammoData.forEach(item => item.final = item.initial + item.income - item.outcome);
+            updateMainPage();
+            saveData();
+        }
+
+        // Отображение истории операций
+        function renderOperationsHistory() {
+            const operationsBody = document.querySelector('#operationsTable tbody');
+            operationsBody.innerHTML = '';
+            operationsHistory.slice(-10).reverse().forEach(op => {
+                const row = document.createElement('tr');
+                const date = new Date(op.date);
+                row.innerHTML = `
+                    <td>${date.toLocaleDateString('ru-RU')} ${date.toLocaleTimeString('ru-RU')}</td>
+                    <td>${op.type}</td>
+                    <td>${op.operation === 'in' ? 'Приход' : 'Расход'}</td>
+                    <td>${op.quantity}</td>
+                    <td>${op.notes || '-'}</td>
+                `;
+                operationsBody.appendChild(row);
+            });
+        }
+
+        // Сохранение данных
+        function saveData() {
+            localStorage.setItem('ammoData', JSON.stringify(ammoData));
+            localStorage.setItem('operationsHistory', JSON.stringify(operationsHistory));
+        }
+
+        // Загрузка данных
+        function loadAmmoData() {
+            const savedData = localStorage.getItem('ammoData');
+            const savedOperations = localStorage.getItem('operationsHistory');
+            if (savedData) ammoData = JSON.parse(savedData);
+            if (savedOperations) operationsHistory = JSON.parse(savedOperations);
+        }
+
+        // Применение операции
+        function applyOperation() {
+            const type = document.getElementById('operationAmmoType').value;
+            const operation = document.getElementById('operationType').value;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const notes = document.getElementById('notes').value;
+
+            if (!type || quantity <= 0) return;
+
+            let ammoItem = ammoData.find(item => item.type === type);
+            if (!ammoItem) {
+                ammoItem = { type, initial: 0, income: 0, outcome: 0, final: 0 };
+                ammoData.push(ammoItem);
+            }
+
+            if (operation === 'in') {
+                ammoItem.income += quantity;
+            } else if (ammoItem.final < quantity) {
+                return;
+            } else {
+                ammoItem.outcome += quantity;
+            }
+
+            ammoItem.final = ammoItem.initial + ammoItem.income - ammoItem.outcome;
+            operationsHistory.push({ date: new Date().toISOString(), type, operation, quantity, notes });
+            updateMainPage();
+            renderOperationsHistory();
+            saveData();
+            alert('Данные сохранены');
+            document.getElementById('quantity').value = 1;
+            document.getElementById('notes').value = '';
+        }
+
+        // Генерация отчета
+        function generateReport() {
+            const reportBody = document.querySelector('#reportTable tbody');
+            reportBody.innerHTML = '';
+            ammoData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.type}</td>
+                    <td>${item.initial}</td>
+                    <td class="positive">${item.income}</td>
+                    <td class="negative">${item.outcome}</td>
+                    <td>${item.final}</td>
+                `;
+                reportBody.appendChild(row);
+            });
+        }
+
+        // Обновление даты отчета
+        function updateReportDate() {
+            const now = new Date();
+            document.getElementById('reportDate').textContent = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Печать отчета на отдельном листе
+        function printReport() {
+            activateTab('reports');
+            if (!document.querySelector('#reportTable tbody').children.length) generateReport();
+
+            // Создание нового окна для печати
+            const printWindow = window.open('', '', 'width=800,height=600');
+            if (!printWindow) {
+                alert('Блокировка всплывающих окон предотвращает печать. Разблокируйте и попробуйте снова.');
+                return;
+            }
+
+            // Подготовка содержимого для нового окна
+            const reportContent = `
+                <!DOCTYPE html>
+                <html lang="ru">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Отчет по боеприпасам</title>
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            margin: 0;
+                            padding: 20px;
+                            background: white;
+                        }
+                        h2 {
+                            text-align: center;
+                            color: #2c3e50;
+                            margin-bottom: 20px;
+                        }
+                        h3 {
+                            color: #2c3e50;
+                            margin-bottom: 10px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        th, td {
+                            padding: 10px;
+                            text-align: left;
+                            border: 1px solid #bdc3c7;
+                        }
+                        th {
+                            background-color: #34495e;
+                            color: white;
+                        }
+                        .positive { color: #27ae60; }
+                        .negative { color: #e74c3c; }
+                        @page { margin: 1cm; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Отчет по боеприпасам 2С1 'Гвоздика'</h2>
+                    <h3>Отчет на: ${document.getElementById('reportDate').textContent}</h3>
+                    ${document.getElementById('reportTable').outerHTML}
+                </body>
+                </html>
+            `;
+
+            printWindow.document.write(reportContent);
+            printWindow.document.close();
+
+            // Вызов печати после загрузки содержимого
+            printWindow.onload = () => printWindow.print();
+            printWindow.onafterprint = () => printWindow.close(); // Закрытие окна после печати
+        }
+
+        // Обновление списка типов боеприпасов
+        function updateAmmoTypeSelect() {
+            const select = document.getElementById('operationAmmoType');
+            const uniqueTypes = [...new Set(ammoData.map(item => item.type))];
+            select.innerHTML = '<option value="">-- Выберите тип --</option>';
+            uniqueTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                select.appendChild(option);
+            });
+        }
+
+        // Регистрация Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () =>
+                navigator.serviceWorker.register('sw.js').catch(err => console.error('Service Worker error:', err))
+            );
+        }
+    </script>
+</body>
+</html>
