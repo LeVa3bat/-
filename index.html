@@ -31,6 +31,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-size: 14px;
         }
 
         @keyframes camoShift {
@@ -40,63 +41,64 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 0.5rem;
             flex: 1;
         }
 
         header {
             background: var(--primary);
             color: white;
-            padding: 1.5rem;
+            padding: 1rem;
             text-align: center;
-            border-radius: 10px 10px 0 0;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         header h1 {
-            font-size: 1.8rem;
+            font-size: 1.2rem;
             font-weight: 600;
         }
 
         .tabs {
             display: flex;
             flex-wrap: nowrap;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
+            border-radius: 8px;
             overflow-x: auto;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.9);
             flex: 1;
             text-align: center;
             transition: all 0.3s ease;
             white-space: nowrap;
-            min-width: 90px;
-            font-size: 1rem;
+            min-width: 80px;
+            font-size: 0.85rem;
             font-weight: 500;
         }
 
         .tab.active {
             background: var(--primary);
             color: white;
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .tab-content {
             display: none;
             background: rgba(255, 255, 255, 0.95);
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
         }
 
         .tab-content.active {
@@ -106,16 +108,18 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
+            font-size: 0.8rem;
         }
 
         th, td {
-            padding: 1rem;
+            padding: 0.5rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            word-break: break-word;
         }
 
         th {
@@ -123,7 +127,8 @@
             color: white;
             position: sticky;
             top: 0;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
+            padding: 0.6rem 0.5rem;
         }
 
         tr:nth-child(even) {
@@ -137,19 +142,21 @@
 
         .action-buttons {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
 
         button {
-            padding: 0.75rem 1.25rem;
+            padding: 0.6rem 1rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 500;
+            flex: 1;
+            min-width: 120px;
         }
 
         .btn-primary {
@@ -172,28 +179,28 @@
             color: white;
         }
 
-        button:hover {
-            transform: scale(1.05);
-            opacity: 0.95;
+        button:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         select, input {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.6rem;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.9rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
             transition: border-color 0.3s ease;
         }
 
@@ -203,11 +210,11 @@
         }
 
         .report-section {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
+            margin-top: 1rem;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .positive {
@@ -220,46 +227,151 @@
 
         .summary-card {
             background: rgba(255, 255, 255, 0.95);
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
         }
 
         .summary-card h3 {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
         }
 
         .editable-cell {
-            padding: 0.5rem;
+            padding: 0.4rem;
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 3px;
             background-color: rgba(255, 255, 255, 0.9);
-            min-width: 50px;
+            min-width: 40px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            width: 100%;
         }
 
         .readonly-cell {
             background-color: rgba(249, 251, 253, 0.9);
-            padding: 0.5rem 0.75rem;
+            padding: 0.4rem 0.5rem;
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 3px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         footer {
             text-align: center;
-            padding: 1rem;
+            padding: 0.8rem;
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             margin-top: auto;
             background: rgba(255, 255, 255, 0.7);
             border-top: 1px solid var(--border);
+        }
+
+        /* Мобильная оптимизация таблиц */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+        }
+
+        /* Улучшенная мобильная навигация */
+        .mobile-tab-header {
+            display: none;
+        }
+
+        /* Адаптивные заголовки для маленьких экранов */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.3rem;
+            }
+            
+            header {
+                padding: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .tab {
+                padding: 0.6rem 0.8rem;
+                min-width: 70px;
+                font-size: 0.75rem;
+            }
+            
+            .tab-content {
+                padding: 0.8rem;
+            }
+            
+            th, td {
+                padding: 0.4rem;
+                font-size: 0.7rem;
+            }
+            
+            th {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.7rem;
+            }
+            
+            button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+                min-width: 100px;
+            }
+            
+            /* Скрываем длинные заголовки в таблицах на очень маленьких экранах */
+            .compact-table th:nth-child(2),
+            .compact-table td:nth-child(2),
+            .compact-table th:nth-child(3),
+            .compact-table td:nth-child(3),
+            .compact-table th:nth-child(4),
+            .compact-table td:nth-child(4) {
+                display: none;
+            }
+            
+            .compact-table th:first-child::after {
+                content: " (Н/П/Р/К)";
+                font-size: 0.6rem;
+            }
+            
+            /* Адаптивные формы */
+            .form-group {
+                margin-bottom: 0.6rem;
+            }
+            
+            select, input {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            header h1 {
+                font-size: 1rem;
+            }
+            
+            .tab {
+                padding: 0.5rem 0.6rem;
+                min-width: 60px;
+                font-size: 0.7rem;
+            }
+            
+            button {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.7rem;
+                min-width: 90px;
+            }
+            
+            /* Еще более компактный режим для таблиц */
+            .very-compact-table th,
+            .very-compact-table td {
+                padding: 0.3rem;
+                font-size: 0.65rem;
+            }
         }
 
         @media print {
@@ -281,76 +393,46 @@
                 padding: 0;
                 margin: 0;
                 background: white;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .tabs {
-                flex-direction: row;
-                overflow-x: auto;
-            }
-
-            table {
-                display: block;
-                overflow-x: auto;
-                font-size: 0.8rem;
-            }
-
-            th, td {
-                padding: 0.5rem 0.75rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .form-group {
-                margin-bottom: 0.75rem;
-            }
-
-            .summary-card {
-                padding: 1rem;
-            }
-
-            header {
-                padding: 0.75rem;
-            }
-
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            button {
-                padding: 0.5rem 1rem;
-                font-size: 0.8rem;
-            }
-
-            .summary-card h3 {
-                font-size: 1rem;
+                font-size: 12px;
             }
         }
 
         .install-btn {
             position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
+            bottom: 1rem;
+            right: 1rem;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 2.5rem;
-            height: 2.5rem;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 2rem;
+            height: 2rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             display: none;
             z-index: 1000;
             transition: transform 0.3s ease;
         }
 
-        .install-btn:hover {
-            transform: scale(1.1);
+        .install-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Улучшенный скролл для мобильных устройств */
+        .mobile-scroll {
+            -webkit-overflow-scrolling: touch;
+            overflow-x: auto;
+        }
+
+        /* Адаптивные заголовки */
+        h2 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        h3 {
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -369,20 +451,22 @@
         <div class="tab-content active" id="main">
             <div class="summary-card">
                 <h3>Сводка по боеприпасам</h3>
-                <table id="summaryTable">
-                    <thead>
-                        <tr>
-                            <th>Тип боеприпаса</th>
-                            <th>Начальный остаток</th>
-                            <th>Приход</th>
-                            <th>Расход</th>
-                            <th>Конечный остаток</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Данные будут добавляться динамически -->
-                    </tbody>
-                </table>
+                <div class="table-container mobile-scroll">
+                    <table id="summaryTable" class="compact-table">
+                        <thead>
+                            <tr>
+                                <th>Тип боеприпаса</th>
+                                <th>Нач.</th>
+                                <th>Прих.</th>
+                                <th>Расх.</th>
+                                <th>Кон.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Данные будут добавляться динамически -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -416,25 +500,27 @@
             </div>
 
             <div class="action-buttons">
-                <button class="btn-primary" id="applyOperation">Применить операцию</button>
+                <button class="btn-primary" id="applyOperation">Применить</button>
             </div>
 
             <div class="summary-card">
                 <h3>История операций</h3>
-                <table id="operationsTable">
-                    <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>Тип боеприпаса</th>
-                            <th>Операция</th>
-                            <th>Количество</th>
-                            <th>Примечание</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Данные операций будут добавляться динамически -->
-                    </tbody>
-                </table>
+                <div class="table-container mobile-scroll">
+                    <table id="operationsTable">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Тип</th>
+                                <th>Операция</th>
+                                <th>Кол-во</th>
+                                <th>Прим.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Данные операций будут добавляться динамически -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -442,26 +528,28 @@
             <h2>Отчеты по боеприпасам</h2>
 
             <div class="action-buttons">
-                <button class="btn-primary" id="generateReport">Сформировать отчет</button>
-                <button class="btn-warning" id="printReport">Печать отчета</button>
+                <button class="btn-primary" id="generateReport">Сформировать</button>
+                <button class="btn-warning" id="printReport">Печать</button>
             </div>
 
             <div class="report-section">
                 <h3>Отчет на: <span id="reportDate"></span></h3>
-                <table id="reportTable">
-                    <thead>
-                        <tr>
-                            <th>Тип боеприпаса</th>
-                            <th>Начальный остаток</th>
-                            <th>Приход</th>
-                            <th>Расход</th>
-                            <th>Конечный остаток</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Данные отчета будут добавляться динамически -->
-                    </tbody>
-                </table>
+                <div class="table-container mobile-scroll">
+                    <table id="reportTable" class="compact-table">
+                        <thead>
+                            <tr>
+                                <th>Тип боеприпаса</th>
+                                <th>Нач.</th>
+                                <th>Прих.</th>
+                                <th>Расх.</th>
+                                <th>Кон.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Данные отчета будут добавляться динамически -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -501,6 +589,13 @@
             updateReportDate();
             updateMainPage();
             renderOperationsHistory();
+            
+            // Добавляем класс для очень маленьких экранов
+            if (window.innerWidth <= 360) {
+                document.querySelectorAll('table').forEach(table => {
+                    table.classList.add('very-compact-table');
+                });
+            }
         });
 
         // Инициализация интерфейса и данных
@@ -521,6 +616,16 @@
             document.getElementById('applyOperation').addEventListener('click', applyOperation);
             document.getElementById('generateReport').addEventListener('click', generateReport);
             document.getElementById('printReport').addEventListener('click', printReport);
+
+            // Обработка сенсорных событий для лучшей мобильной поддержки
+            document.querySelectorAll('button, .tab').forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.8';
+                });
+                element.addEventListener('touchend', function() {
+                    this.style.opacity = '';
+                });
+            });
 
             let deferredPrompt;
             const installButton = document.getElementById('installButton');
@@ -588,7 +693,7 @@
                 const row = document.createElement('tr');
                 const date = new Date(op.date);
                 row.innerHTML = `
-                    <td>${date.toLocaleDateString('ru-RU')} ${date.toLocaleTimeString('ru-RU')}</td>
+                    <td>${date.toLocaleDateString('ru-RU')}</td>
                     <td>${op.type}</td>
                     <td>${op.operation === 'in' ? 'Приход' : 'Расход'}</td>
                     <td>${op.quantity}</td>
@@ -619,7 +724,10 @@
             const quantity = parseInt(document.getElementById('quantity').value) || 0;
             const notes = document.getElementById('notes').value;
 
-            if (!type || quantity <= 0) return;
+            if (!type || quantity <= 0) {
+                alert('Пожалуйста, выберите тип боеприпаса и укажите количество');
+                return;
+            }
 
             let ammoItem = ammoData.find(item => item.type === type);
             if (!ammoItem) {
@@ -630,6 +738,7 @@
             if (operation === 'in') {
                 ammoItem.income += quantity;
             } else if (ammoItem.final < quantity) {
+                alert('Недостаточно боеприпасов для расхода');
                 return;
             } else {
                 ammoItem.outcome += quantity;
@@ -640,6 +749,12 @@
             updateMainPage();
             renderOperationsHistory();
             saveData();
+            
+            // Вибрация для мобильных устройств
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
             alert('Данные сохранены');
             document.getElementById('quantity').value = 1;
             document.getElementById('notes').value = '';
@@ -665,15 +780,7 @@
         // Обновление даты отчета
         function updateReportDate() {
             const now = new Date();
-            now.setHours(10, 27, 0, 0); // Установка на 10:27 AM EEST, 16 сентября 2025
-            document.getElementById('reportDate').textContent = now.toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            });
+            document.getElementById('reportDate').textContent = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
         // Печать отчета на отдельном листе
@@ -682,7 +789,7 @@
             if (!document.querySelector('#reportTable tbody').children.length) generateReport();
 
             // Создание нового окна для печати
-            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            const printWindow = window.open('', '', 'width=800,height=600');
             if (!printWindow) {
                 alert('Блокировка всплывающих окон предотвращает печать. Разблокируйте и попробуйте снова.');
                 return;
@@ -741,14 +848,9 @@
             printWindow.document.write(reportContent);
             printWindow.document.close();
 
-            // Гарантированный вызов печати
-            printWindow.onload = () => {
-                printWindow.focus(); // Убедимся, что окно активно
-                setTimeout(() => {
-                    printWindow.print();
-                    printWindow.onafterprint = () => printWindow.close();
-                }, 500); // Задержка для загрузки содержимого
-            };
+            // Вызов печати после загрузки содержимого
+            printWindow.onload = () => printWindow.print();
+            printWindow.onafterprint = () => printWindow.close(); // Закрытие окна после печати
         }
 
         // Обновление списка типов боеприпасов
