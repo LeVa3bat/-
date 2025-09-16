@@ -1,877 +1,524 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Учет Боеприпасов 2С1 'Гвоздика'</title>
-    <link rel="manifest" href="manifest.json">
-    <style>
-        :root {
-            --primary: linear-gradient(135deg, #2c3e50, #3498db);
-            --secondary: #34495e;
-            --accent: #e74c3c;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --text: #333;
-            --border: rgba(189, 195, 199, 0.5);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#3b4d2a">
+  <title>2С1 "Гвоздика"</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #556b2f;
+      --primary-light: #6b8e23;
+      --secondary: #3b4d2a;
+      --success: #4caf50;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --info: #2196f3;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --border: #dee2e6;
+      --text: #2c3e50;
+      --text-light: #6c757d;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+      --radius: 8px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            background: linear-gradient(45deg, #4a7048, #6b4e31, #2f2f2f, #6b4e31);
-            background-size: 200% 200%;
-            animation: camoShift 15s ease infinite;
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-size: 14px;
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+      line-height: 1.3;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
 
-        @keyframes camoShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+      color: white;
+      padding: 12px 16px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
 
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0.5rem;
-            flex: 1;
-        }
+    .app-header h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+    }
 
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
+    /* Tabs */
+    .tabs-container {
+      background: white;
+      position: sticky;
+      top: calc(48px + env(safe-area-inset-top));
+      z-index: 900;
+      box-shadow: var(--shadow);
+    }
 
-        header h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
+    .tabs {
+      display: flex;
+      background: white;
+    }
 
-        .tabs {
-            display: flex;
-            flex-wrap: nowrap;
-            margin-bottom: 1rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            overflow-x: auto;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            -webkit-overflow-scrolling: touch;
-        }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
 
-        .tab {
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.9);
-            flex: 1;
-            text-align: center;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            min-width: 80px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(85, 107, 47, 0.05);
+    }
 
-        .tab.active {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.03);
-        }
+    .tab i {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
 
-        .tab-content {
-            display: none;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-        }
+    /* Main content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
 
-        .tab-content.active {
-            display: block;
-        }
+    .tab-content {
+      display: none;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 6px;
-            overflow: hidden;
-            font-size: 0.8rem;
-        }
+    .tab-content.active {
+      display: block;
+    }
 
-        th, td {
-            padding: 0.5rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            word-break: break-word;
-        }
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
 
-        th {
-            background: var(--secondary);
-            color: white;
-            position: sticky;
-            top: 0;
-            font-size: 0.75rem;
-            padding: 0.6rem 0.5rem;
-        }
+    .card-header {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
 
-        tr:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.7);
-        }
+    .card-header h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--secondary);
+    }
 
-        tr:hover {
-            background-color: rgba(238, 242, 247, 0.9);
-            transition: background-color 0.2s ease;
-        }
+    /* Ultra Compact Table for Mobile */
+    .mobile-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      table-layout: fixed;
+    }
 
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
+    .mobile-table th,
+    .mobile-table td {
+      padding: 6px 4px;
+      text-align: center;
+      border: 1px solid var(--border);
+      line-height: 1.2;
+    }
 
-        button {
-            padding: 0.6rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
-            font-weight: 500;
-            flex: 1;
-            min-width: 120px;
-        }
+    .mobile-table th {
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+      font-size: 10px;
+      padding: 8px 4px;
+    }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
+    .mobile-table .category-header td {
+      background: var(--secondary);
+      color: white;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      padding: 8px 10px;
+    }
 
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
+    .mobile-table .total-row {
+      background: rgba(134, 158, 95, 0.1);
+      font-weight: 600;
+    }
 
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
+    .mobile-table .income-positive {
+      color: var(--success);
+      font-weight: 500;
+    }
 
-        .btn-danger {
-            background: var(--accent);
-            color: white;
-        }
+    .mobile-table .outcome-negative {
+      color: var(--danger);
+      font-weight: 500;
+    }
 
-        button:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
+    .mobile-table input {
+      width: 100%;
+      padding: 3px 2px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 11px;
+      text-align: center;
+      background: white;
+    }
 
-        .form-group {
-            margin-bottom: 0.8rem;
-        }
+    /* Fixed column widths for mobile */
+    .col-name { width: 40%; }
+    .col-initial { width: 12%; }
+    .col-income { width: 12%; }
+    .col-outcome { width: 12%; }
+    .col-final { width: 12%; }
 
-        label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-weight: 500;
-            font-size: 0.8rem;
-        }
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
 
-        select, input {
-            width: 100%;
-            padding: 0.6rem;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            font-size: 0.8rem;
-            transition: border-color 0.3s ease;
-        }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
 
-        select:focus, input:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
+    label {
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.8rem;
+    }
 
-        .report-section {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+    select, input {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 0.9rem;
+      background: white;
+    }
 
-        .positive {
-            color: var(--success);
-        }
+    /* Buttons */
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 15px 0;
+    }
 
-        .negative {
-            color: var(--accent);
-        }
+    .btn {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 44px;
+    }
 
-        .summary-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-        }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-info { background: var(--info); color: white; }
 
-        .summary-card h3 {
-            margin-bottom: 0.8rem;
-            color: var(--primary);
-            font-size: 1rem;
-            font-weight: 600;
-        }
+    /* Action grid */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
 
-        .editable-cell {
-            padding: 0.4rem;
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            background-color: rgba(255, 255, 255, 0.9);
-            min-width: 40px;
-            text-align: center;
-            font-size: 0.8rem;
-            width: 100%;
-        }
+    .action-grid .btn {
+      flex-direction: column;
+      padding: 8px 4px;
+      font-size: 0.75rem;
+      min-height: 60px;
+    }
 
-        .readonly-cell {
-            background-color: rgba(249, 251, 253, 0.9);
-            padding: 0.4rem 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
+    .action-grid .btn i {
+      font-size: 1.1rem;
+      margin-bottom: 3px;
+    }
 
-        footer {
-            text-align: center;
-            padding: 0.8rem;
-            color: #666;
-            font-size: 0.7rem;
-            margin-top: auto;
-            background: rgba(255, 255, 255, 0.7);
-            border-top: 1px solid var(--border);
-        }
+    /* Footer */
+    .app-footer {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      background: white;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
 
-        /* Мобильная оптимизация таблиц */
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-        }
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      z-index: 1000;
+    }
 
-        /* Улучшенная мобильная навигация */
-        .mobile-tab-header {
-            display: none;
-        }
+    /* Responsive */
+    @media (max-width: 360px) {
+      .tab span {
+        display: none;
+      }
 
-        /* Адаптивные заголовки для маленьких экранов */
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.3rem;
-            }
-            
-            header {
-                padding: 0.8rem;
-                margin-bottom: 0.8rem;
-            }
-            
-            header h1 {
-                font-size: 1.1rem;
-            }
-            
-            .tab {
-                padding: 0.6rem 0.8rem;
-                min-width: 70px;
-                font-size: 0.75rem;
-            }
-            
-            .tab-content {
-                padding: 0.8rem;
-            }
-            
-            th, td {
-                padding: 0.4rem;
-                font-size: 0.7rem;
-            }
-            
-            th {
-                padding: 0.5rem 0.4rem;
-                font-size: 0.7rem;
-            }
-            
-            button {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.75rem;
-                min-width: 100px;
-            }
-            
-            /* Скрываем длинные заголовки в таблицах на очень маленьких экранах */
-            .compact-table th:nth-child(2),
-            .compact-table td:nth-child(2),
-            .compact-table th:nth-child(3),
-            .compact-table td:nth-child(3),
-            .compact-table th:nth-child(4),
-            .compact-table td:nth-child(4) {
-                display: none;
-            }
-            
-            .compact-table th:first-child::after {
-                content: " (Н/П/Р/К)";
-                font-size: 0.6rem;
-            }
-            
-            /* Адаптивные формы */
-            .form-group {
-                margin-bottom: 0.6rem;
-            }
-            
-            select, input {
-                padding: 0.5rem;
-            }
-        }
+      .tab i {
+        margin-bottom: 0;
+        font-size: 1.1rem;
+      }
 
-        @media (max-width: 360px) {
-            header h1 {
-                font-size: 1rem;
-            }
-            
-            .tab {
-                padding: 0.5rem 0.6rem;
-                min-width: 60px;
-                font-size: 0.7rem;
-            }
-            
-            button {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.7rem;
-                min-width: 90px;
-            }
-            
-            /* Еще более компактный режим для таблиц */
-            .very-compact-table th,
-            .very-compact-table td {
-                padding: 0.3rem;
-                font-size: 0.65rem;
-            }
-        }
+      .mobile-table {
+        font-size: 10px;
+      }
 
-        @media print {
-            .tabs, .action-buttons, .install-btn, footer {
-                display: none !important;
-            }
+      .mobile-table th {
+        font-size: 9px;
+        padding: 6px 3px;
+      }
 
-            .tab-content {
-                display: block !important;
-                box-shadow: none;
-                padding: 0;
-            }
+      .col-name { width: 38%; }
+      .col-initial { width: 13%; }
+      .col-income { width: 13%; }
+      .col-outcome { width: 13%; }
+      .col-final { width: 13%; }
+    }
 
-            header {
-                box-shadow: none;
-            }
+    @media (max-width: 320px) {
+      .mobile-table {
+        font-size: 9px;
+      }
 
-            body, .container {
-                padding: 0;
-                margin: 0;
-                background: white;
-                font-size: 12px;
-            }
-        }
+      .mobile-table th {
+        font-size: 8px;
+      }
 
-        .install-btn {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 2rem;
-            height: 2rem;
-            font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            display: none;
-            z-index: 1000;
-            transition: transform 0.3s ease;
-        }
+      .col-name { width: 36%; }
+      .col-initial { width: 14%; }
+    }
 
-        .install-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Улучшенный скролл для мобильных устройств */
-        .mobile-scroll {
-            -webkit-overflow-scrolling: touch;
-            overflow-x: auto;
-        }
-
-        /* Адаптивные заголовки */
-        h2 {
-            font-size: 1.1rem;
-            margin-bottom: 0.8rem;
-        }
-
-        h3 {
-            font-size: 1rem;
-        }
-    </style>
+    /* Safe area */
+    @supports(padding: max(0px)) {
+      .main-content, .app-header, .tabs-container {
+        padding-left: max(8px, env(safe-area-inset-left));
+        padding-right: max(8px, env(safe-area-inset-right));
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Учет Боеприпасов 2С1 'Гвоздика'</h1>
-        </header>
+  <header class="app-header">
+    <h1>2С1 "Гвоздика"</h1>
+  </header>
 
-        <div class="tabs">
-            <div class="tab active" data-tab="main">Главная</div>
-            <div class="tab" data-tab="operations">Операции</div>
-            <div class="tab" data-tab="reports">Отчеты</div>
+  <div class="tabs-container">
+    <div class="tabs">
+      <div class="tab active" data-tab="main">
+        <i class="fas fa-home"></i>
+        <span>Главная</span>
+      </div>
+      <div class="tab" data-tab="operations">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Операции</span>
+      </div>
+      <div class="tab" data-tab="reports">
+        <i class="fas fa-chart-bar"></i>
+        <span>Отчёты</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content">
+    <!-- Главная -->
+    <div class="tab-content active" id="main">
+      <div class="card">
+        <div class="card-header">
+          <h2>Текущее состояние</h2>
         </div>
-
-        <div class="tab-content active" id="main">
-            <div class="summary-card">
-                <h3>Сводка по боеприпасам</h3>
-                <div class="table-container mobile-scroll">
-                    <table id="summaryTable" class="compact-table">
-                        <thead>
-                            <tr>
-                                <th>Тип боеприпаса</th>
-                                <th>Нач.</th>
-                                <th>Прих.</th>
-                                <th>Расх.</th>
-                                <th>Кон.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Данные будут добавляться динамически -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div style="overflow-x: auto;">
+          <table class="mobile-table" id="summaryTable">
+            <thead>
+              <tr>
+                <th class="col-name">Наименование</th>
+                <th class="col-initial">Нач.</th>
+                <th class="col-income">Прих.</th>
+                <th class="col-outcome">Расх.</th>
+                <th class="col-final">Кон.</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-
-        <div class="tab-content" id="operations">
-            <h2>Приход/Расход боеприпасов</h2>
-
-            <div class="form-group">
-                <label for="operationAmmoType">Тип боеприпаса:</label>
-                <select id="operationAmmoType">
-                    <option value="">-- Выберите тип --</option>
-                    <!-- Динамически заполняется в JavaScript -->
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="operationType">Тип операции:</label>
-                <select id="operationType">
-                    <option value="in">Приход</option>
-                    <option value="out">Расход</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="quantity">Количество:</label>
-                <input type="number" id="quantity" min="1" value="1">
-            </div>
-
-            <div class="form-group">
-                <label for="notes">Примечание:</label>
-                <input type="text" id="notes" placeholder="Дополнительная информация">
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn-primary" id="applyOperation">Применить</button>
-            </div>
-
-            <div class="summary-card">
-                <h3>История операций</h3>
-                <div class="table-container mobile-scroll">
-                    <table id="operationsTable">
-                        <thead>
-                            <tr>
-                                <th>Дата</th>
-                                <th>Тип</th>
-                                <th>Операция</th>
-                                <th>Кол-во</th>
-                                <th>Прим.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Данные операций будут добавляться динамически -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="reports">
-            <h2>Отчеты по боеприпасам</h2>
-
-            <div class="action-buttons">
-                <button class="btn-primary" id="generateReport">Сформировать</button>
-                <button class="btn-warning" id="printReport">Печать</button>
-            </div>
-
-            <div class="report-section">
-                <h3>Отчет на: <span id="reportDate"></span></h3>
-                <div class="table-container mobile-scroll">
-                    <table id="reportTable" class="compact-table">
-                        <thead>
-                            <tr>
-                                <th>Тип боеприпаса</th>
-                                <th>Нач.</th>
-                                <th>Прих.</th>
-                                <th>Расх.</th>
-                                <th>Кон.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Данные отчета будут добавляться динамически -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <footer>
-        <p>Разработчик Васев Алексей Евгеньевич 2025 г.</p>
-    </footer>
+    <!-- Операции -->
+    <div class="tab-content" id="operations">
+      <div class="card">
+        <div class="card-header">
+          <h2>Новая операция</h2>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Категория</label>
+            <select id="categorySelect">
+              <option value="">-- Выберите --</option>
+              <option value="charge">Заряд</option>
+              <option value="shell">Снаряд</option>
+            </select>
+          </div>
 
-    <button class="install-btn" id="installButton">+</button>
+          <div class="form-group">
+            <label>Тип</label>
+            <select id="itemSelect">
+              <option value="">-- Выберите тип --</option>
+            </select>
+          </div>
 
-    <script>
-        // Константы для данных
-        const AMMO_TYPES = [
-            "Зарыватель РТМ-2",
-            "Заряд полный",
-            "Заряд уменьшенный",
-            "Full charge (Иранские)",
-            "РУС (ОФ-56(1))",
-            "КИМ (ОФ)",
-            "ИРАН (ОФ)",
-            "ДБ (ОФ)",
-            "ДЫМ (Д4(М))",
-            "ТРОТИЛ",
-            "СВЕТ [С-4]",
-            "ШРАПНЕЛЬ [ЗШ1]"
-        ];
+          <div class="form-group">
+            <label>Количество</label>
+            <input type="number" id="itemQuantity" min="1" value="1">
+          </div>
 
-        // Глобальные данные
-        let ammoData = JSON.parse(localStorage.getItem('ammoData')) || [];
-        let operationsHistory = JSON.parse(localStorage.getItem('operationsHistory')) || [];
+          <div class="form-group">
+            <label>Примечание</label>
+            <input type="text" id="itemNotes" placeholder="Необязательно">
+          </div>
+        </div>
 
-        // Инициализация приложения
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
-            setupEventListeners();
-            loadAmmoData();
-            updateReportDate();
-            updateMainPage();
-            renderOperationsHistory();
-            
-            // Добавляем класс для очень маленьких экранов
-            if (window.innerWidth <= 360) {
-                document.querySelectorAll('table').forEach(table => {
-                    table.classList.add('very-compact-table');
-                });
-            }
-        });
+        <div class="btn-group">
+          <button class="btn btn-success" id="itemIncome">
+            <i class="fas fa-plus"></i> Приход
+          </button>
+          <button class="btn btn-danger" id="itemOutcome">
+            <i class="fas fa-minus"></i> Расход
+          </button>
+        </div>
+      </div>
 
-        // Инициализация интерфейса и данных
-        function initializeApp() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.addEventListener('click', () => activateTab(tab.dataset.tab)));
+      <div class="card">
+        <div class="card-header">
+          <h2>История операций</h2>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="mobile-table" id="operationsTable">
+            <thead>
+              <tr>
+                <th style="width: 15%">Дата</th>
+                <th style="width: 10%">Кат.</th>
+                <th style="width: 10%">Оп.</th>
+                <th style="width: 30%">Тип</th>
+                <th style="width: 15%">Кол-во</th>
+                <th style="width: 20%">Прим.</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-            if (ammoData.length === 0) {
-                ammoData = AMMO_TYPES.map(type => ({ type, initial: 0, income: 0, outcome: 0, final: 0 }));
-                saveData();
-            }
+    <!-- Отчёты -->
+    <div class="tab-content" id="reports">
+      <div class="card">
+        <div class="card-header">
+          <h2>Отчёт: <span id="reportDate"></span></h2>
+        </div>
+        
+        <div class="action-grid">
+          <button class="btn btn-primary" id="generateReport">
+            <i class="fas fa-sync"></i>
+            <span>Обновить</span>
+          </button>
+          <button class="btn btn-warning" id="printReport">
+            <i class="fas fa-print"></i>
+            <span>Печать</span>
+          </button>
+          <button class="btn btn-success" id="exportData">
+            <i class="fas fa-download"></i>
+            <span>Экспорт</span>
+          </button>
+          <button class="btn btn-info" id="importData">
+            <i class="fas fa-upload"></i>
+            <span>Импорт</span>
+          </button>
+          <button class="btn btn-danger" id="resetData">
+            <i class="fas fa-trash"></i>
+            <span>Сброс</span>
+          </button>
+        </div>
 
-            updateAmmoTypeSelect();
-        }
+        <div style="overflow-x: auto;">
+          <table class="mobile-table" id="reportTable">
+            <thead>
+              <tr>
+                <th class="col-name">Наименование</th>
+                <th class="col-initial">Нач.</th>
+                <th class="col-income">Прих.</th>
+                <th class="col-outcome">Расх.</th>
+                <th class="col-final">Кон.</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
 
-        // Настройка обработчиков событий
-        function setupEventListeners() {
-            document.getElementById('applyOperation').addEventListener('click', applyOperation);
-            document.getElementById('generateReport').addEventListener('click', generateReport);
-            document.getElementById('printReport').addEventListener('click', printReport);
+  <footer class="app-footer">
+    <p>© Васев А.Е., 2025</p>
+  </footer>
 
-            // Обработка сенсорных событий для лучшей мобильной поддержки
-            document.querySelectorAll('button, .tab').forEach(element => {
-                element.addEventListener('touchstart', function() {
-                    this.style.opacity = '0.8';
-                });
-                element.addEventListener('touchend', function() {
-                    this.style.opacity = '';
-                });
-            });
-
-            let deferredPrompt;
-            const installButton = document.getElementById('installButton');
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installButton.style.display = 'block';
-            });
-            installButton.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') installButton.style.display = 'none';
-                    deferredPrompt = null;
-                }
-            });
-        }
-
-        // Активация вкладки
-        function activateTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        // Обновление главной страницы
-        function updateMainPage() {
-            const summaryBody = document.querySelector('#summaryTable tbody');
-            summaryBody.innerHTML = '';
-            ammoData.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.type}</td>
-                    <td><input type="number" class="editable-cell" value="${item.initial}" data-index="${index}" data-field="initial" min="0"></td>
-                    <td><div class="readonly-cell positive">${item.income}</div></td>
-                    <td><div class="readonly-cell negative">${item.outcome}</div></td>
-                    <td><div class="readonly-cell">${item.final}</div></td>
-                `;
-                summaryBody.appendChild(row);
-            });
-
-            document.querySelectorAll('.editable-cell').forEach(input => {
-                input.addEventListener('change', () => {
-                    const index = input.dataset.index;
-                    const field = input.dataset.field;
-                    ammoData[index][field] = parseInt(input.value) || 0;
-                    calculateFinal();
-                });
-            });
-        }
-
-        // Пересчет итогов
-        function calculateFinal() {
-            ammoData.forEach(item => item.final = item.initial + item.income - item.outcome);
-            updateMainPage();
-            saveData();
-        }
-
-        // Отображение истории операций
-        function renderOperationsHistory() {
-            const operationsBody = document.querySelector('#operationsTable tbody');
-            operationsBody.innerHTML = '';
-            operationsHistory.slice(-10).reverse().forEach(op => {
-                const row = document.createElement('tr');
-                const date = new Date(op.date);
-                row.innerHTML = `
-                    <td>${date.toLocaleDateString('ru-RU')}</td>
-                    <td>${op.type}</td>
-                    <td>${op.operation === 'in' ? 'Приход' : 'Расход'}</td>
-                    <td>${op.quantity}</td>
-                    <td>${op.notes || '-'}</td>
-                `;
-                operationsBody.appendChild(row);
-            });
-        }
-
-        // Сохранение данных
-        function saveData() {
-            localStorage.setItem('ammoData', JSON.stringify(ammoData));
-            localStorage.setItem('operationsHistory', JSON.stringify(operationsHistory));
-        }
-
-        // Загрузка данных
-        function loadAmmoData() {
-            const savedData = localStorage.getItem('ammoData');
-            const savedOperations = localStorage.getItem('operationsHistory');
-            if (savedData) ammoData = JSON.parse(savedData);
-            if (savedOperations) operationsHistory = JSON.parse(savedOperations);
-        }
-
-        // Применение операции
-        function applyOperation() {
-            const type = document.getElementById('operationAmmoType').value;
-            const operation = document.getElementById('operationType').value;
-            const quantity = parseInt(document.getElementById('quantity').value) || 0;
-            const notes = document.getElementById('notes').value;
-
-            if (!type || quantity <= 0) {
-                alert('Пожалуйста, выберите тип боеприпаса и укажите количество');
-                return;
-            }
-
-            let ammoItem = ammoData.find(item => item.type === type);
-            if (!ammoItem) {
-                ammoItem = { type, initial: 0, income: 0, outcome: 0, final: 0 };
-                ammoData.push(ammoItem);
-            }
-
-            if (operation === 'in') {
-                ammoItem.income += quantity;
-            } else if (ammoItem.final < quantity) {
-                alert('Недостаточно боеприпасов для расхода');
-                return;
-            } else {
-                ammoItem.outcome += quantity;
-            }
-
-            ammoItem.final = ammoItem.initial + ammoItem.income - ammoItem.outcome;
-            operationsHistory.push({ date: new Date().toISOString(), type, operation, quantity, notes });
-            updateMainPage();
-            renderOperationsHistory();
-            saveData();
-            
-            // Вибрация для мобильных устройств
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-            
-            alert('Данные сохранены');
-            document.getElementById('quantity').value = 1;
-            document.getElementById('notes').value = '';
-        }
-
-        // Генерация отчета
-        function generateReport() {
-            const reportBody = document.querySelector('#reportTable tbody');
-            reportBody.innerHTML = '';
-            ammoData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.type}</td>
-                    <td>${item.initial}</td>
-                    <td class="positive">${item.income}</td>
-                    <td class="negative">${item.outcome}</td>
-                    <td>${item.final}</td>
-                `;
-                reportBody.appendChild(row);
-            });
-        }
-
-        // Обновление даты отчета
-        function updateReportDate() {
-            const now = new Date();
-            document.getElementById('reportDate').textContent = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        // Печать отчета на отдельном листе
-        function printReport() {
-            activateTab('reports');
-            if (!document.querySelector('#reportTable tbody').children.length) generateReport();
-
-            // Создание нового окна для печати
-            const printWindow = window.open('', '', 'width=800,height=600');
-            if (!printWindow) {
-                alert('Блокировка всплывающих окон предотвращает печать. Разблокируйте и попробуйте снова.');
-                return;
-            }
-
-            // Подготовка содержимого для нового окна
-            const reportContent = `
-                <!DOCTYPE html>
-                <html lang="ru">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Отчет по боеприпасам</title>
-                    <style>
-                        body {
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            margin: 0;
-                            padding: 20px;
-                            background: white;
-                        }
-                        h2 {
-                            text-align: center;
-                            color: #2c3e50;
-                            margin-bottom: 20px;
-                        }
-                        h3 {
-                            color: #2c3e50;
-                            margin-bottom: 10px;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 20px;
-                        }
-                        th, td {
-                            padding: 10px;
-                            text-align: left;
-                            border: 1px solid #bdc3c7;
-                        }
-                        th {
-                            background-color: #34495e;
-                            color: white;
-                        }
-                        .positive { color: #27ae60; }
-                        .negative { color: #e74c3c; }
-                        @page { margin: 1cm; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Отчет по боеприпасам 2С1 'Гвоздика'</h2>
-                    <h3>Отчет на: ${document.getElementById('reportDate').textContent}</h3>
-                    ${document.getElementById('reportTable').outerHTML}
-                </body>
-                </html>
-            `;
-
-            printWindow.document.write(reportContent);
-            printWindow.document.close();
-
-            // Вызов печати после загрузки содержимого
-            printWindow.onload = () => printWindow.print();
-            printWindow.onafterprint = () => printWindow.close(); // Закрытие окна после печати
-        }
-
-        // Обновление списка типов боеприпасов
-        function updateAmmoTypeSelect() {
-            const select = document.getElementById('operationAmmoType');
-            const uniqueTypes = [...new Set(ammoData.map(item => item.type))];
-            select.innerHTML = '<option value="">-- Выберите тип --</option>';
-            uniqueTypes.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type;
-                option.textContent = type;
-                select.appendChild(option);
-            });
-        }
-
-        // Регистрация Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () =>
-                navigator.serviceWorker.register('sw.js').catch(err => console.error('Service Worker error:', err))
-            );
-        }
-    </script>
+  <input type="file" id="importFile" accept=".json" style="display:none;">
+  <script src="app.js"></script>
 </body>
 </html>
