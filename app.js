@@ -17,6 +17,8 @@ const SHELLS = [
   "ШРАПНЕЛЬ [ЗШ1]"
 ];
 
+const APP_VERSION = "1.0.0";
+
 // Сокращенные названия для мобильных
 const SHORT_NAMES = {
   "Взрыватель РТМ2": "Взрыв. РТМ2",
@@ -33,11 +35,13 @@ const SHORT_NAMES = {
 // === Данные ===
 let ammoData = JSON.parse(localStorage.getItem("ammoData")) || {};
 let operationsHistory = JSON.parse(localStorage.getItem("operationsHistory")) || [];
+let currentTheme = localStorage.getItem("theme") || "light";
 
 // === Инициализация ===
 document.addEventListener("DOMContentLoaded", () => {
   initializeApp();
   setupEventListeners();
+  applyTheme(currentTheme);
   updateMainPage();
   renderOperationsHistory();
   updateReportDate();
@@ -54,6 +58,9 @@ function initializeApp() {
   if (Object.keys(ammoData).length === 0) {
     initializeAmmoData();
   }
+
+  // Инициализация модального окна
+  initializeModal();
 }
 
 function initializeAmmoData() {
@@ -61,6 +68,49 @@ function initializeAmmoData() {
     ammoData[item] = { initial: 0, income: 0, outcome: 0, final: 0 };
   });
   saveData();
+}
+
+function initializeModal() {
+  const modal = document.getElementById("settingsModal");
+  const settingsBtn = document.getElementById("settingsBtn");
+  const closeBtn = document.getElementById("closeModal");
+  const themeBtns = document.querySelectorAll(".theme-btn");
+
+  settingsBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const theme = btn.dataset.theme;
+      applyTheme(theme);
+      themeBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+}
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  localStorage.setItem("theme", theme);
+  
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", "#2d3a1f");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    document.querySelector('meta[name="theme-color"]').setAttribute("content", "#556b2f");
+  }
 }
 
 function setupEventListeners() {
@@ -88,10 +138,6 @@ function activateTab(tabName) {
   if (tabElement && contentElement) {
     tabElement.classList.add("active");
     contentElement.classList.add("active");
-
-    if (tabName === 'reports') {
-      generateReport();
-    }
   }
 }
 
@@ -259,71 +305,109 @@ function saveData() {
 
 // === Отчёты ===
 function generateReport() {
-  const reportBody = document.querySelector("#reportTable tbody");
-  reportBody.innerHTML = "";
-
-  const renderRows = (items, title) => {
-    const header = document.createElement("tr");
-    header.className = "category-header";
-    header.innerHTML = `<td colspan="5">${title}</td>`;
-    reportBody.appendChild(header);
-
-    items.forEach(name => {
-      const item = ammoData[name] || { initial: 0, income: 0, outcome: 0, final: 0 };
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td class="col-name">${getShortName(name)}</td>
-        <td class="col-initial">${item.initial}</td>
-        <td class="col-income income-positive">${item.income}</td>
-        <td class="col-outcome outcome-negative">${item.outcome}</td>
-        <td class="col-final">${item.final}</td>
-      `;
-      reportBody.appendChild(row);
-    });
-
-    const total = calculateTotal(items);
-    const totalRow = document.createElement("tr");
-    totalRow.className = "total-row";
-    totalRow.innerHTML = `
-      <td class="col-name">Итого</td>
-      <td class="col-initial">${total.initial}</td>
-      <td class="col-income income-positive">${total.income}</td>
-      <td class="col-outcome outcome-negative">${total.outcome}</td>
-      <td class="col-final">${total.final}</td>
-    `;
-    reportBody.appendChild(totalRow);
-  };
-
-  renderRows(CHARGES, "ЗАРЯДЫ");
-  renderRows(SHELLS, "СНАРЯДЫ");
+  showToast("✅ Отчет обновлен");
 }
 
 function printReport() {
   const printWindow = window.open('', '_blank');
   const now = new Date().toLocaleDateString('ru-RU');
   
-  printWindow.document.write(`
+  let reportHTML = `
     <html>
       <head>
-        <title>Отчет - ${now}</title>
+        <title>Отчет 2С1 Гвоздика - ${now}</title>
         <style>
           body { font-family: Arial; margin: 10px; font-size: 12px; }
           h1 { text-align: center; margin-bottom: 10px; }
           table { width: 100%; border-collapse: collapse; }
           th, td { border: 1px solid #000; padding: 6px; text-align: center; }
           th { background-color: #f0f0f0; }
+          .category-header { background: #556b2f; color: white; text-align: left; font-weight: bold; }
+          .total-row { background-color: #f0f0f0; font-weight: bold; }
           @media print { body { margin: 5px; } }
         </style>
       </head>
       <body>
         <h1>Отчет 2С1 "Гвоздика"</h1>
         <div>На дату: ${now}</div>
-        ${document.getElementById('reportTable').outerHTML}
+        <div>Версия приложения: ${APP_VERSION}</div>
+        <br>
+        <table>
+          <thead>
+            <tr>
+              <th>Наименование</th>
+              <th>Нач.</th>
+              <th>Прих.</th>
+              <th>Расх.</th>
+              <th>Кон.</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+
+  // Заряды
+  reportHTML += `<tr class="category-header"><td colspan="5">ЗАРЯДЫ</td></tr>`;
+  CHARGES.forEach(name => {
+    const item = ammoData[name] || { initial: 0, income: 0, outcome: 0, final: 0 };
+    reportHTML += `
+      <tr>
+        <td>${name}</td>
+        <td>${item.initial}</td>
+        <td>${item.income}</td>
+        <td>${item.outcome}</td>
+        <td>${item.final}</td>
+      </tr>
+    `;
+  });
+
+  const chargesTotal = calculateTotal(CHARGES);
+  reportHTML += `
+    <tr class="total-row">
+      <td>Итого заряды</td>
+      <td>${chargesTotal.initial}</td>
+      <td>${chargesTotal.income}</td>
+      <td>${chargesTotal.outcome}</td>
+      <td>${chargesTotal.final}</td>
+    </tr>
+  `;
+
+  // Снаряды
+  reportHTML += `<tr class="category-header"><td colspan="5">СНАРЯДЫ</td></tr>`;
+  SHELLS.forEach(name => {
+    const item = ammoData[name] || { initial: 0, income: 0, outcome: 0, final: 0 };
+    reportHTML += `
+      <tr>
+        <td>${name}</td>
+        <td>${item.initial}</td>
+        <td>${item.income}</td>
+      <td>${item.outcome}</td>
+        <td>${item.final}</td>
+      </tr>
+    `;
+  });
+
+  const shellsTotal = calculateTotal(SHELLS);
+  reportHTML += `
+    <tr class="total-row">
+      <td>Итого снаряды</td>
+      <td>${shellsTotal.initial}</td>
+      <td>${shellsTotal.income}</td>
+      <td>${shellsTotal.outcome}</td>
+      <td>${shellsTotal.final}</td>
+    </tr>
+  `;
+
+  reportHTML += `
+          </tbody>
+        </table>
+        <br>
+        <div>Всего боеприпасов: ${chargesTotal.final + shellsTotal.final}</div>
         <script>window.print();</script>
       </body>
     </html>
-  `);
+  `;
   
+  printWindow.document.write(reportHTML);
   printWindow.document.close();
 }
 
@@ -337,7 +421,8 @@ function exportData() {
   const dataStr = JSON.stringify({ 
     ammoData, 
     operationsHistory,
-    exportDate: new Date().toISOString()
+    exportDate: new Date().toISOString(),
+    version: APP_VERSION
   }, null, 2);
   
   const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
