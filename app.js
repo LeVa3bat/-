@@ -75,6 +75,8 @@ function initializeModal() {
   const settingsBtn = document.getElementById("settingsBtn");
   const closeBtn = document.getElementById("closeModal");
   const themeBtns = document.querySelectorAll(".theme-btn");
+  const exportBtn = document.getElementById("exportDataSettings");
+  const importBtn = document.getElementById("importDataSettings");
 
   settingsBtn.addEventListener("click", () => {
     modal.style.display = "block";
@@ -97,6 +99,25 @@ function initializeModal() {
       themeBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
     });
+  });
+
+  exportBtn.addEventListener("click", () => {
+    exportData();
+    modal.style.display = "none";
+  });
+
+  importBtn.addEventListener("click", () => {
+    document.getElementById("importFile").click();
+    modal.style.display = "none";
+  });
+
+  // Установка активной темы в модальном окне
+  themeBtns.forEach(btn => {
+    if (btn.dataset.theme === currentTheme) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
   });
 }
 
@@ -122,10 +143,8 @@ function setupEventListeners() {
   // Отчёты
   document.getElementById("generateReport").addEventListener("click", generateReport);
   document.getElementById("printReport").addEventListener("click", printReport);
-  document.getElementById("exportData").addEventListener("click", exportData);
-  document.getElementById("importData").addEventListener("click", () => document.getElementById("importFile").click());
-  document.getElementById("importFile").addEventListener("change", importData);
   document.getElementById("resetData").addEventListener("click", resetData);
+  document.getElementById("importFile").addEventListener("change", importData);
 }
 
 function activateTab(tabName) {
