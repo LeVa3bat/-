@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gvozdika-mobile-v1';
+const CACHE_NAME = 'gvozdika-mobile-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -19,7 +19,7 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            return caches.delete(var cacheName);
+            return caches.delete(cacheName);
           }
         })
       );
