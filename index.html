@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#3b4d2a">
+  <meta name="theme-color" content="#556b2f">
   <title>2С1 "Гвоздика"</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,12 +25,25 @@
       --radius: 8px;
     }
 
+    [data-theme="dark"] {
+      --primary: #6b8e23;
+      --primary-light: #7ca53c;
+      --secondary: #2d3a1f;
+      --bg: #1a1a1a;
+      --card-bg: #2d2d2d;
+      --border: #444;
+      --text: #e0e0e0;
+      --text-light: #a0a0a0;
+      --shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     body {
@@ -54,17 +67,139 @@
       top: 0;
       z-index: 1000;
       box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .app-header h1 {
       font-size: 1.1rem;
       font-weight: 600;
       text-align: center;
+      flex: 1;
+    }
+
+    .settings-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Settings Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 400px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h2 {
+      color: var(--text);
+      font-size: 1.2rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-light);
+      cursor: pointer;
+    }
+
+    .settings-option {
+      margin-bottom: 15px;
+    }
+
+    .settings-option label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .theme-switch {
+      display: flex;
+      gap: 10px;
+    }
+
+    .theme-btn {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .theme-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    .about-info {
+      background: rgba(var(--primary-rgb), 0.1);
+      padding: 15px;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .about-info p {
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .version {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 15px;
     }
 
     /* Tabs */
     .tabs-container {
-      background: white;
+      background: var(--card-bg);
       position: sticky;
       top: calc(48px + env(safe-area-inset-top));
       z-index: 900;
@@ -73,7 +208,7 @@
 
     .tabs {
       display: flex;
-      background: white;
+      background: var(--card-bg);
     }
 
     .tab {
@@ -135,7 +270,7 @@
     .card-header h2 {
       font-size: 0.95rem;
       font-weight: 600;
-      color: var(--secondary);
+      color: var(--text);
     }
 
     /* Ultra Compact Table for Mobile */
@@ -189,11 +324,12 @@
     .mobile-table input {
       width: 100%;
       padding: 3px 2px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border);
       border-radius: 3px;
       font-size: 11px;
       text-align: center;
-      background: white;
+      background: var(--card-bg);
+      color: var(--text);
     }
 
     /* Fixed column widths for mobile */
@@ -228,7 +364,8 @@
       border: 1px solid var(--border);
       border-radius: 5px;
       font-size: 0.9rem;
-      background: white;
+      background: var(--card-bg);
+      color: var(--text);
     }
 
     /* Buttons */
@@ -285,7 +422,7 @@
       padding: 12px;
       font-size: 0.75rem;
       color: var(--text-light);
-      background: white;
+      background: var(--card-bg);
       border-top: 1px solid var(--border);
       margin-top: auto;
     }
@@ -355,8 +492,38 @@
 </head>
 <body>
   <header class="app-header">
+    <button class="settings-btn" id="settingsBtn">
+      <i class="fas fa-cog"></i>
+    </button>
     <h1>2С1 "Гвоздика"</h1>
+    <div style="width: 40px;"></div> <!-- Spacer for balance -->
   </header>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Настройки</h2>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      
+      <div class="settings-option">
+        <label>Тема оформления</label>
+        <div class="theme-switch">
+          <button class="theme-btn active" data-theme="light">День</button>
+          <button class="theme-btn" data-theme="dark">Ночь</button>
+        </div>
+      </div>
+
+      <div class="about-info">
+        <p><strong>О приложении</strong></p>
+        <p>Учет боеприпасов для САУ 2С1 "Гвоздика"</p>
+        <p>Версия: 1.0.0</p>
+        <p>Разработчик: Васев А.Е.</p>
+        <p>2025</p>
+      </div>
+    </div>
+  </div>
 
   <div class="tabs-container">
     <div class="tabs">
@@ -495,27 +662,12 @@
             <span>Сброс</span>
           </button>
         </div>
-
-        <div style="overflow-x: auto;">
-          <table class="mobile-table" id="reportTable">
-            <thead>
-              <tr>
-                <th class="col-name">Наименование</th>
-                <th class="col-initial">Нач.</th>
-                <th class="col-income">Прих.</th>
-                <th class="col-outcome">Расх.</th>
-                <th class="col-final">Кон.</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
       </div>
     </div>
   </main>
 
   <footer class="app-footer">
-    <p>© Васев А.Е., 2025</p>
+    <p>© Васев А.Е., 2025 | Версия 1.0.0</p>
   </footer>
 
   <input type="file" id="importFile" accept=".json" style="display:none;">
