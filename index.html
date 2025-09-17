@@ -396,10 +396,10 @@
     .btn-warning { background: var(--warning); color: white; }
     .btn-info { background: var(--info); color: white; }
 
-    /* Action grid */
+    /* Action grid - обновленный для 3 кнопок */
     .action-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin: 12px 0;
     }
@@ -466,6 +466,16 @@
       .col-income { width: 13%; }
       .col-outcome { width: 13%; }
       .col-final { width: 13%; }
+
+      .action-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .action-grid .btn {
+        min-height: 50px;
+        font-size: 0.7rem;
+      }
     }
 
     @media (max-width: 320px) {
@@ -521,6 +531,18 @@
         <p>Версия: 1.0.0</p>
         <p>Разработчик: Васев А.Е.</p>
         <p>2025</p>
+      </div>
+
+      <div class="settings-option">
+        <label>Управление данными</label>
+        <div class="btn-group">
+          <button class="btn btn-success" id="exportDataSettings">
+            <i class="fas fa-download"></i> Экспорт
+          </button>
+          <button class="btn btn-info" id="importDataSettings">
+            <i class="fas fa-upload"></i> Импорт
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -648,14 +670,6 @@
           <button class="btn btn-warning" id="printReport">
             <i class="fas fa-print"></i>
             <span>Печать</span>
-          </button>
-          <button class="btn btn-success" id="exportData">
-            <i class="fas fa-download"></i>
-            <span>Экспорт</span>
-          </button>
-          <button class="btn btn-info" id="importData">
-            <i class="fas fa-upload"></i>
-            <span>Импорт</span>
           </button>
           <button class="btn btn-danger" id="resetData">
             <i class="fas fa-trash"></i>
